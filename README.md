@@ -1,4 +1,4 @@
-<img align="center" src="https://github.com/Parellin-Technologies-LLC/basic-fs/blob/master/logo.png" alt="basic-fs logo">
+<img width="100px" height="100px" align="center" src="https://github.com/Parellin-Technologies-LLC/basic-fs/blob/master/logo.png" alt="basic-fs logo">
 
 # basic-fs
 A very simple internal file system API for any computer. Builds out compiled versions to MacOS, Linux, and Windows.
