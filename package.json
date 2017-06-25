@@ -12,7 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "pkg": "pkg --options expose-gc --build --out-path pkg/ index.js"
+    "pkg": "pkg --out-path pkg/ index.js"
   },
   "dependencies": {
     "express": "^4.15.3",

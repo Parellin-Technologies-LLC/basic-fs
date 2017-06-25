@@ -6,8 +6,8 @@ Download a [#release][0] to run locally.
 ### **Recommended for LOCAL AREA NETWORK ONLY**
 
 Use case:
-    - "Air drop" for Mac to PC/Linux
-    - Stream write or send files (perhaps log files) to another machine on your network
+- "Air drop" for Mac to PC/Linux
+- Stream write or send files (perhaps log files) to another machine on your network
 
 
 
