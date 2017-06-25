@@ -8,6 +8,9 @@ const
         saveFile,
         deleteFile,
     }          = require( './lib/fswrapper' ),
+    {
+        ensureDir
+    }          = require( 'fs-extra' ),
     path       = require( 'path' ),
     crypto     = require( 'crypto' ),
     Response   = require( './lib/Response' ),
@@ -19,7 +22,12 @@ const
     catchAll   = res => {
         res.setHeader( 'Content-Type', 'application/json' );
         res.json( config );
-    };
+    },
+    find       = opt => new Promise(
+        ( res, rej ) => op.find( opt,
+            ( e, p ) => e ? rej( e ) : res( p )
+        )
+    );
 
 app.all( config.ping, ( req, res ) => {
     res.setHeader( 'Content-Type', 'application/json' );
@@ -146,13 +154,14 @@ app.delete( config.proxy, ( req, res ) => {
 app.all( config.docs, ( req, res ) => catchAll( res ) );
 app.all( '*', ( req, res ) => catchAll( res ) );
 
-op.find(
-    {
-        startingPort: config.port,
-        endingPort: config.port + 50
-    },
-    ( e, p ) => app.listen(
-        p,
-        () => console.log( `BasicFS running on ${lanIP}:${p}` )
+
+ensureDir( config.publicDirectory )
+    .then(
+        () => find( { startingPort: config.port, endingPort: config.port + 50 } )
     )
-);
+    .then(
+        port => app.listen(
+            port,
+            () => console.log( `BasicFS running on ${lanIP}:${port}` )
+        )
+    );
