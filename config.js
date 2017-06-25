@@ -1,6 +1,9 @@
 'use strict';
 
+const { version } = require( './package.json' );
+
 module.exports = {
+	version,
     cwd: process.cwd(),
     publicDirectory: 'public',
     port: 3000,

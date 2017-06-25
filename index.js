@@ -162,6 +162,6 @@ ensureDir( config.publicDirectory )
     .then(
         port => app.listen(
             port,
-            () => console.log( `BasicFS running on ${lanIP}:${port}` )
+            () => console.log( `BasicFS v${config.version} running on ${lanIP}:${port}` )
         )
     );
