@@ -13,7 +13,7 @@ const
     }          = require( 'fs-extra' ),
     path       = require( 'path' ),
     crypto     = require( 'crypto' ),
-    Response   = require( './lib/Response' ),
+    Response   = require( 'http-response-class' ),
     express    = require( 'express' ),
     formidable = require( 'formidable' ),
     op         = require( 'openport' ),
