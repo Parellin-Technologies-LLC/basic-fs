@@ -1,10 +1,16 @@
+/** ****************************************************************************************************
+ * File: config.js
+ * Project: basic-fs
+ * @author Nick Soggin <iSkore@users.noreply.github.com> on 11-Jul-2017
+ *******************************************************************************************************/
 'use strict';
 
 const
-	{ version } = require( './package.json' ),
-	{ join }    = require( 'path' );
+	{ version, name } = require( './package.json' ),
+	{ join }          = require( 'path' );
 
 module.exports = {
+	name,
 	version,
 	cwd: process.cwd(),
 	dataDirectory: 'data/',
@@ -13,12 +19,31 @@ module.exports = {
 	maximumURISize: 1600,
 	maximumHeaderSize: 4000,
 	maximumPayloadSize: 53687091200,
-	minimumHTTPVersion: 1.0,
+	minimumHTTPVersion: 1.1,
+	speedStandard: 8,
 	port: 3000,
-	ping: '/ping',
-	kill: '/kill',
-	docs: '/docs',
-	data: [ '/data', '/data/*' ]
+	api: {
+		home: {
+			route: '/',
+			method: [ 'ALL' ]
+		},
+		ping: {
+			route: '/ping',
+			method: [ 'ALL' ]
+		},
+		kill: {
+			route: '/kill',
+			method: [ 'ALL' ]
+		},
+		docs: {
+			route: '/docs',
+			method: [ 'ALL' ]
+		},
+		data: {
+			route: '/data*',
+			method: [ 'GET', 'PUT', 'POST', 'DELETE' ]
+		}
+	}
 };
 
 // TODO: create a "download" function to zip up files and download
