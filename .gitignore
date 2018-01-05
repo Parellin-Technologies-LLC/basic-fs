@@ -10,11 +10,8 @@ clover.xml
 .tags
 .tags1
 *.ss*
-<<<<<<< HEAD
 *idea*
 *.idea*
-=======
->>>>>>> f68bbb5... First Commit - Build Successful
 
 # Node logs
 npm-debug.log*
