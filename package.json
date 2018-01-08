@@ -3,7 +3,7 @@
   "author": "",
   "version": "1.0.0",
   "description": "BasicFS is a very simple file storage API for your computer",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Parellin-Technologies-LLC/basic-fs.git"
@@ -13,7 +13,10 @@
     "dev": "nodemon ./index.js",
     "test": "mocha",
     "start": "node index.js",
-    "pkg": "pkg --out-path pkg/ index.js"
+    "build": "~/nodec --tmpdir=../tmp -o basic-fs-macOS index.js",
+    "buildOSX": "~/nodec --tmpdir=../tmp -o basic-fs-macOS index.js",
+    "buildLinux": "~/nodec --tmpdir=../tmp -o basic-fs-linux index.js",
+    "buildWin": "~/nodec --tmpdir=../tmp -o basic-fs-win index.js"
   },
   "dependencies": {
     "express": "^4.16.2",

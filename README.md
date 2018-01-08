@@ -60,6 +60,70 @@ Use case:
 
 <br/>
 
+#### `GET /docs`
+> returns the config of the application, including the api configuration
+
+**Example Response**:
+
+```json
+{
+    "statusCode": 200,
+    "message": "OK",
+    "data": {
+        "name": "basic-fs",
+        "version": "0.1.2",
+        "cwd": "/Users/trashcan/GitHub/basic-fs",
+        "dataDirectory": "data/",
+        "dotfiles": "allow",
+        "timeout": 20000,
+        "maximumURISize": 1600,
+        "maximumHeaderSize": 4000,
+        "maximumPayloadSize": 53687091200,
+        "minimumHTTPVersion": 1.1,
+        "speedStandard": 8,
+        "port": 3000,
+        "api": {
+            "home": {
+                "route": "/",
+                "method": [
+                    "ALL"
+                ]
+            },
+            "ping": {
+                "route": "/ping",
+                "method": [
+                    "ALL"
+                ]
+            },
+            "kill": {
+                "route": "/kill",
+                "method": [
+                    "ALL"
+                ]
+            },
+            "docs": {
+                "route": "/docs",
+                "method": [
+                    "ALL"
+                ]
+            },
+            "data": {
+                "route": "/data*",
+                "method": [
+                    "GET",
+                    "PUT",
+                    "POST",
+                    "DELETE"
+                ]
+            }
+        },
+        "root": "/Users/trashcan/GitHub/basic-fs/data/"
+    }
+}
+```
+
+<br/>
+
 #### `GET /kill`
 > shuts the server down and stops the API
 
