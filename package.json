@@ -1,7 +1,7 @@
 {
   "name": "basic-fs",
   "author": "",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "BasicFS is a very simple file storage API for your computer",
   "license": "ISC",
   "repository": {
