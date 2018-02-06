@@ -30,17 +30,17 @@ class BasicFS
     {
         this.expressInitialize();
     }
-    
+
     expressInitialize()
     {
         this.express = express();
         this.express.disable( 'x-powered-by' );
     }
-    
+
     initialize()
     {
         kill.bind( this );
-        
+
         this.express.use( require( './lib/inspection' )() );
         this.express.get( config.api.data.route, getData );
         this.express.post( config.api.data.route, uploadData );
@@ -51,7 +51,7 @@ class BasicFS
         this.express.all( config.api.kill.route, kill );
         this.express.all( config.api.docs.route, docs );
         this.express.all( '*', methodNotAllowed );
-        
+
         return new Promise(
             ( res, rej ) => {
                 process
@@ -59,7 +59,6 @@ class BasicFS
                         if( logging ) {
                             console.log( 'Received SIGINT, graceful shutdown...' );
                         }
-                        
                         this.shutdown( 0 );
                     } )
                     .on( 'uncaughtException', err => {
@@ -79,7 +78,7 @@ class BasicFS
                         }
                         this.shutdown( code );
                     } );
-                
+
                 ensureDir( config.dataDirectory )
                     .then(
                         () => new Promise(
@@ -95,50 +94,49 @@ class BasicFS
             }
         );
     }
-    
+
     start()
     {
         return new Promise(
             res => {
                 this.server = http.createServer( this.express );
-                
+
                 this.server.listen( config.port, () => {
-                        if( logging ) {
-                            console.log( `BasicFS v${config.version} running on ${lanIP}:${config.port}` );
-                        }
-                        res( this );
+                    if( logging ) {
+                        console.log( `BasicFS v${config.version} running on ${lanIP}:${config.port}` );
                     }
-                );
+                    res( this );
+                } );
             }
         );
     }
-    
+
     shutdown( code )
     {
         if( !logging ) {
             this.server.close();
             return;
         }
-        
+
         code = code || 0;
-        
+
         if( this.server ) {
             this.server.close();
         }
-        
+
         if( isClosed ) {
             if( logging ) {
                 console.log( 'Shutdown after SIGINT, forced shutdown...' );
             }
             process.exit( 0 );
         }
-        
+
         isClosed = true;
-        
+
         if( logging ) {
             console.log( 'server exiting with code:', code );
         }
-        
+
         process.exit( code );
     }
 }

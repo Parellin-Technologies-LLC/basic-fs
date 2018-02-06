@@ -14,6 +14,23 @@ Builds out compiled versions to MacOS, Linux, and Windows.
 
 Download a [#release][0] to run locally.
 
+To run locally
+```
+https://github.com/Parellin-Technologies-LLC/basic-fs
+cd basic-fs
+npm i
+npm start
+```
+
+Building `basic-fs`
+```
+https://github.com/Parellin-Technologies-LLC/basic-fs
+cd basic-fs
+npm i
+npm run build
+```
+
+
 ### **Recommended for LOCAL AREA NETWORK ONLY**
 > Known security notes
 > - `basic-fs` does **not** deny access to the entire file system
