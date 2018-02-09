@@ -3,21 +3,25 @@ version: 0.1
 phases:
   install:
     commands:
-      - echo Installing Mocha...
+      - curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
+      - apt-get install -y nodejs
+      - echo $(node -v)
+      - echo $(npm -v)
       - npm install -g mocha
+      - apt-get install -y squashfs-tools gcc g++
+      - curl -L http://enclose.io/nodec/nodec-linux-x64.gz | gunzip > nodec
+      - chmod +x nodec
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
   build:
     commands:
-      - echo Build started on `date`
-      - echo Compiling the Node.js code
       - npm test
-      - npm run build
+      - ./nodec -o basic-fs ./index.js
   post_build:
     commands:
-      - echo Build completed on `date`
+      - echo Build completed on $(date)
 artifacts:
   files:
     - basic-fs

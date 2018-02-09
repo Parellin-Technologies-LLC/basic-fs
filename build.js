@@ -6,11 +6,11 @@
 'use strict';
 
 const
-    { name } = require( './package.json' ),
+    { name, main } = require( './package.json' ),
     { exec } = require( 'pkg' );
 
-async function build() {
-    await exec( [ 'index.js', '--target', 'host', '--output', name, '--build' ] );
-}
+exec( [ main, '--target', 'host', '--output', name, '--build' ] )
+    .then( console.log )
+    .then( () => console.log( 'Build Complete' ) )
+    .catch( console.error );
 
-build();

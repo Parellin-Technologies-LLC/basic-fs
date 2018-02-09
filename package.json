@@ -10,10 +10,10 @@
   },
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon ./index.js",
     "test": "mocha",
-    "start": "node index.js",
-    "build": "node build.js"
+    "build": "~/nodec --tmpdir=../.tmp -o basic-fs ./index.js"
   },
   "dependencies": {
     "express": "^4.16.2",
@@ -24,23 +24,13 @@
     "openport": "0.0.4",
     "uuid": "^3.1.0"
   },
-  "pkg": {
-    "scripts": [
-      "node_modules/**/*",
-      "lib/**/*"
-    ],
-    "targets": [
-      "node7"
-    ]
-  },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^3.0.0",
     "eslint": "^4.17.0",
     "mocha": "^4.1.0",
-    "nodemon": "^1.14.7",
-    "pkg": "^4.3.0"
+    "nodemon": "^1.14.7"
   },
   "nodemonConfig": {
     "ignore": [
