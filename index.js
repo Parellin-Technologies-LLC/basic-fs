@@ -21,11 +21,11 @@ const { name, version } = require( './package' );
             'Usage:  basic-fs [options]',
             '    basic-fs -d ~/data',
             '',
-            '    -h, --help     help menu',
-            `    -v, --version  print ${name} version`,
-            `    -s, --silent   run ${name} in silent mode`,
-            '    -d, --data     set the data directory to save files to',
-            `    -p, --port     set the port to start ${name} on`
+            '    -h, --help         help menu',
+            `    -v, --version      print ${name} version`,
+            `    -s, --silent       run ${name} in silent mode`,
+            '    -d, --data [dir]   set the data directory to save files to',
+            `    -p, --port [port]  set the port to start ${name} on`
         ].join( '\n' ) );
     }
 

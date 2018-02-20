@@ -155,7 +155,7 @@ Use case:
 
 <br/>
 
-#### `GET /data/*`
+#### `GET /data/*` and `GET /form/*`
 > returns data specified in the uri parameters
 > Notes:
 > - if a directory is specified: returns a list of the contents in a directory
@@ -196,10 +196,11 @@ Use case:
 
 <br/>
 
-#### `POST /data/*`
+#### `POST /data/*` and `POST /form/*`
 > creates a folder or file if it does not exist
 > Notes:
-> - will **not** overwrite data
+> - `/form` will **not** overwrite data
+> - `/data` **will** overwrite data
 > - will create deep paths if they do not exist
 > - will accept bulk uploads
 
@@ -242,7 +243,7 @@ Use case:
 
 <br/>
 
-#### `PUT /data/*`
+#### `PUT /form/*`
 > updates a folder or file if it exists
 > Notes:
 > - **will** overwrite data
@@ -288,7 +289,7 @@ Use case:
 
 <br/>
 
-#### `DELETE /data/*`
+#### `DELETE /data/*` and `DELETE /form/*`
 > deletes a folder or file if it exists
 > Notes:
 > - **will** recursively delete a folder

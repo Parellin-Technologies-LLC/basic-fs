@@ -233,6 +233,179 @@ describe( 'basic-fs tests', () => {
         } );
     } );
 
+    describe( 'Methods /form', () => {
+        const
+            testID     = UUIDv4(),
+            filename   = `test-${testID}.json`,
+            data       = { hello: 'world' },
+            updateData = { hello: 'there' };
+
+        describe( `POST /form/${filename}`, () => {
+            it( `should have response 201 Created with filename ${filename}`, done => {
+                chai.request( server.express )
+                    .post( `/form/${filename}` )
+                    .send( data )
+                    .end( ( err, res ) => {
+                        if( err ) console.error( err );
+                        res.should.have.status( 201 );
+                        res.body.should.have.property( 'statusCode' ).and.eq( 201 );
+                        res.body.should.have.property( 'message' ).and.eq( 'Created' );
+                        res.body.should.have.property( 'data' ).and.deep.eq( [ `/${filename}` ] );
+                        done();
+                    } );
+            } );
+
+            it( `should create a file in ${process.env.DATA} with name: ${filename}`, () => {
+                expect( pathExists( join( config.root, filename ) ) ).to.eventually.eq( true );
+            } );
+
+            it( 'should not allow write and responds with 409 Conflict if POST is attempted on a file that exists', done => {
+                chai.request( server.express )
+                    .post( `/form/${filename}` )
+                    .send( data )
+                    .end( ( err, res ) => {
+                        if( err ) {
+                            res.should.have.status( 409 );
+                            res.body.should.have.property( 'statusCode' ).and.eq( 409 );
+                            res.body.should.have.property( 'message' ).and.eq( 'Conflict' );
+                            res.body.should.have.property( 'data' ).and.eq( `File or path already exists: /${filename}` );
+                        } else {
+                            res.should.have.status( 409 );
+                        }
+                        done();
+                    } );
+            } );
+        } );
+
+        describe( 'GET /form/', () => {
+            it( `should have response 200 OK and contain an array of files including ${filename}`, done => {
+                chai.request( server.express )
+                    .get( '/form/' )
+                    .end( ( err, res ) => {
+                        if( err ) console.error( err );
+                        res.should.have.status( 200 );
+                        res.body.should.have.property( 'statusCode' ).and.eq( 200 );
+                        res.body.should.have.property( 'message' ).and.eq( 'OK' );
+                        res.body.should.have.property( 'data' );
+                        res.body.data.should.be.an( 'array' ).that.does.include( filename );
+                        done();
+                    } );
+            } );
+        } );
+
+        describe( `GET /form/${filename}`, () => {
+            it( `should have response 200 OK and contain the data in ${filename}`, done => {
+                chai.request( server.express )
+                    .get( `/form/${filename}` )
+                    .end( ( err, res ) => {
+                        if( err ) console.error( err );
+                        res.should.have.status( 200 );
+                        res.body.should.deep.eq( data );
+                        done();
+                    } );
+            } );
+
+            it( 'should have response 404 Not Found if file does not exist', done => {
+                const random = UUIDv4();
+
+                chai.request( server.express )
+                    .get( `/form/${random}` )
+                    .end( ( err, res ) => {
+                        if( err ) {
+                            res.should.have.status( 404 );
+                            res.body.should.have.property( 'statusCode' ).and.eq( 404 );
+                            res.body.should.have.property( 'message' ).and.eq( 'Not Found' );
+                            res.body.should.have.property( 'data' ).and.eq( `/${random}` );
+                        } else {
+                            res.should.have.status( 404 );
+                        }
+                        done();
+                    } );
+            } );
+        } );
+
+        describe( `PUT /form/${filename}`, () => {
+            it( `should have response 202 Accepted with filename ${filename}`, done => {
+                chai.request( server.express )
+                    .put( `/form/${filename}` )
+                    .send( updateData )
+                    .end( ( err, res ) => {
+                        if( err ) console.error( err );
+                        res.should.have.status( 202 );
+                        res.body.should.have.property( 'statusCode' ).and.eq( 202 );
+                        res.body.should.have.property( 'message' ).and.eq( 'Accepted' );
+                        res.body.should.have.property( 'data' ).and.deep.eq( [ `/${filename}` ] );
+                        done();
+                    } );
+            } );
+
+            it( `should have updated the data in ${filename}`, done => {
+                chai.request( server.express )
+                    .get( `/form/${filename}` )
+                    .end( ( err, res ) => {
+                        if( err ) console.error( err );
+                        res.should.have.status( 200 );
+                        res.body.should.deep.eq( updateData );
+                        done();
+                    } );
+            } );
+
+            it( 'should have response 404 Not Found if file does not exist', done => {
+                const random = UUIDv4();
+
+                chai.request( server.express )
+                    .put( `/form/${random}` )
+                    .send( updateData )
+                    .end( ( err, res ) => {
+                        if( err ) {
+                            res.should.have.status( 404 );
+                            res.body.should.have.property( 'statusCode' ).and.eq( 404 );
+                            res.body.should.have.property( 'message' ).and.eq( 'Not Found' );
+                            res.body.should.have.property( 'data' ).and.eq( `/${random}` );
+                        } else {
+                            res.should.have.status( 404 );
+                        }
+                        done();
+                    } );
+            } );
+        } );
+
+        describe( `DELETE /form/${filename}`, () => {
+            it( `should have response 200 OK with filename ${filename}`, done => {
+                chai.request( server.express )
+                    .delete( `/form/${filename}` )
+                    .end( ( err, res ) => {
+                        if( err ) console.error( err );
+                        res.should.have.status( 200 );
+                        res.body.should.have.property( 'statusCode' ).and.eq( 200 );
+                        res.body.should.have.property( 'message' ).and.eq( 'OK' );
+                        res.body.should.have.property( 'data' ).and.eq( `/${filename}` );
+                        done();
+                    } );
+            } );
+
+            it( `should delete a file in /form with name: ${filename}`, () => {
+                expect( pathExists( join( config.root, filename ) ) ).to.eventually.eq( false );
+            } );
+
+            it( 'should have response 404 Not Found if file does not exist', done => {
+                chai.request( server.express )
+                    .get( `/form/${filename}` )
+                    .end( ( err, res ) => {
+                        if( err ) {
+                            res.should.have.status( 404 );
+                            res.body.should.have.property( 'statusCode' ).and.eq( 404 );
+                            res.body.should.have.property( 'message' ).and.eq( 'Not Found' );
+                            res.body.should.have.property( 'data' ).and.eq( `/${filename}` );
+                        } else {
+                            res.should.have.status( 404 );
+                        }
+                        done();
+                    } );
+            } );
+        } );
+    } );
+
     describe( 'Methods /data', () => {
         const
             testID     = UUIDv4(),
@@ -255,32 +428,15 @@ describe( 'basic-fs tests', () => {
                     } );
             } );
 
-            it( `should create a file in /data with name: ${filename}`, () => {
+            it( `should create a file in ${process.env.DATA} with name: ${filename}`, () => {
                 expect( pathExists( join( config.root, filename ) ) ).to.eventually.eq( true );
-            } );
-
-            it( 'should not allow write and responds with 409 Conflict if POST is attempted on a file that exists', done => {
-                chai.request( server.express )
-                    .post( `/data/${filename}` )
-                    .send( data )
-                    .end( ( err, res ) => {
-                        if( err ) {
-                            res.should.have.status( 409 );
-                            res.body.should.have.property( 'statusCode' ).and.eq( 409 );
-                            res.body.should.have.property( 'message' ).and.eq( 'Conflict' );
-                            res.body.should.have.property( 'data' ).and.eq( `File or path already exists: /${filename}` );
-                        } else {
-                            res.should.have.status( 409 );
-                        }
-                        done();
-                    } );
             } );
         } );
 
-        describe( 'GET /data/', () => {
+        describe( 'GET /form/', () => {
             it( `should have response 200 OK and contain an array of files including ${filename}`, done => {
                 chai.request( server.express )
-                    .get( '/data/' )
+                    .get( '/form/' )
                     .end( ( err, res ) => {
                         if( err ) console.error( err );
                         res.should.have.status( 200 );
@@ -293,10 +449,10 @@ describe( 'basic-fs tests', () => {
             } );
         } );
 
-        describe( `GET /data/${filename}`, () => {
+        describe( `GET /form/${filename}`, () => {
             it( `should have response 200 OK and contain the data in ${filename}`, done => {
                 chai.request( server.express )
-                    .get( `/data/${filename}` )
+                    .get( `/form/${filename}` )
                     .end( ( err, res ) => {
                         if( err ) console.error( err );
                         res.should.have.status( 200 );
@@ -309,7 +465,7 @@ describe( 'basic-fs tests', () => {
                 const random = UUIDv4();
 
                 chai.request( server.express )
-                    .get( `/data/${random}` )
+                    .get( `/form/${random}` )
                     .end( ( err, res ) => {
                         if( err ) {
                             res.should.have.status( 404 );
@@ -324,10 +480,10 @@ describe( 'basic-fs tests', () => {
             } );
         } );
 
-        describe( `PUT /data/${filename}`, () => {
+        describe( `PUT /form/${filename}`, () => {
             it( `should have response 202 Accepted with filename ${filename}`, done => {
                 chai.request( server.express )
-                    .put( `/data/${filename}` )
+                    .put( `/form/${filename}` )
                     .send( updateData )
                     .end( ( err, res ) => {
                         if( err ) console.error( err );
@@ -341,7 +497,7 @@ describe( 'basic-fs tests', () => {
 
             it( `should have updated the data in ${filename}`, done => {
                 chai.request( server.express )
-                    .get( `/data/${filename}` )
+                    .get( `/form/${filename}` )
                     .end( ( err, res ) => {
                         if( err ) console.error( err );
                         res.should.have.status( 200 );
@@ -354,7 +510,7 @@ describe( 'basic-fs tests', () => {
                 const random = UUIDv4();
 
                 chai.request( server.express )
-                    .put( `/data/${random}` )
+                    .put( `/form/${random}` )
                     .send( updateData )
                     .end( ( err, res ) => {
                         if( err ) {
@@ -370,10 +526,10 @@ describe( 'basic-fs tests', () => {
             } );
         } );
 
-        describe( `DELETE /data/${filename}`, () => {
+        describe( `DELETE /form/${filename}`, () => {
             it( `should have response 200 OK with filename ${filename}`, done => {
                 chai.request( server.express )
-                    .delete( `/data/${filename}` )
+                    .delete( `/form/${filename}` )
                     .end( ( err, res ) => {
                         if( err ) console.error( err );
                         res.should.have.status( 200 );
@@ -384,13 +540,13 @@ describe( 'basic-fs tests', () => {
                     } );
             } );
 
-            it( `should delete a file in /data with name: ${filename}`, () => {
+            it( `should delete a file in /form with name: ${filename}`, () => {
                 expect( pathExists( join( config.root, filename ) ) ).to.eventually.eq( false );
             } );
 
             it( 'should have response 404 Not Found if file does not exist', done => {
                 chai.request( server.express )
-                    .get( `/data/${filename}` )
+                    .get( `/form/${filename}` )
                     .end( ( err, res ) => {
                         if( err ) {
                             res.should.have.status( 404 );
