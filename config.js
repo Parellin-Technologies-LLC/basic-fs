@@ -7,7 +7,7 @@
 
 const
     { version, name } = require( './package.json' ),
-    { join }          = require( 'path' );
+    { resolve }          = require( 'path' );
 
 module.exports = {
     name,
@@ -53,4 +53,4 @@ module.exports = {
 
 // TODO: create a "download" function to zip up files and download
 
-module.exports.root = join( module.exports.cwd, module.exports.DATA );
+module.exports.root = resolve( module.exports.DATA );

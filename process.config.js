@@ -4,10 +4,10 @@ module.exports = {
             name: 'BasicFS',
             script: './index.js',
             env: {
-                NODE_ENV: 'development'
-            },
-            env_production: {
-                NODE_ENV: 'production'
+                NODE_ENV: 'development',
+                SILENT: false,
+                DATA: 'data/',
+                PORT: 3000
             },
             restart_delay: 5000,
             instances: 0,
