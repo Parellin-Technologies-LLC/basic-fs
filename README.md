@@ -90,7 +90,7 @@ Use case:
         "name": "basic-fs",
         "version": "0.1.2",
         "cwd": "/Users/trashcan/GitHub/basic-fs",
-        "dataDirectory": "data/",
+        "DATA": "data/",
         "dotfiles": "allow",
         "timeout": 20000,
         "maximumURISize": 1600,
@@ -98,7 +98,6 @@ Use case:
         "maximumPayloadSize": 53687091200,
         "minimumHTTPVersion": 1.1,
         "speedStandard": 8,
-        "port": 3000,
         "api": {
             "home": {
                 "route": "/",

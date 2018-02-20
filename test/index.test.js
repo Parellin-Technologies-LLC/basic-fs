@@ -5,6 +5,11 @@
  *******************************************************************************************************/
 'use strict';
 
+process.env.NODE_ENV = 'test';
+process.env.SILENT   = true;
+process.env.DATA     = 'data/';
+process.env.PORT     = 3000;
+
 const
     config         = require( '../config' ),
     chai           = require( 'chai' ),
@@ -34,7 +39,7 @@ describe( 'basic-fs tests', () => {
     } );
 
     it( 'should initialize and set the port', () => {
-        expect( server.initialize() ).to.eventually.have.property( 'port' );
+        expect( server.initialize() ).to.eventually.have.property( 'PORT' );
     } );
 
     it( 'should have ensured directory: "data"', () => {
@@ -50,7 +55,7 @@ describe( 'basic-fs tests', () => {
     } );
 
     it( 'should have bind to port', () => {
-        expect( server.server.address() ).to.have.property( 'port' ).and.eq( server.port );
+        expect( server.server.address() ).to.have.property( 'port' ).and.eq( +server.port );
     } );
 
     describe( 'API packet inspection', () => {
@@ -403,7 +408,7 @@ describe( 'basic-fs tests', () => {
 
     describe( 'GET /kill', () => {
         it( 'should have binding to port', () => {
-            expect( server.server.address() ).to.have.property( 'port' ).and.eq( server.port );
+            expect( server.server.address() ).to.have.property( 'port' ).and.eq( +server.port );
         } );
 
         it( 'should have kill server and respond: 200 OK with data "server terminated"', done => {

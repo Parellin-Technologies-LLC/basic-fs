@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
     'env': {
         'es6': true,
@@ -20,8 +18,7 @@ module.exports = {
         'describe': true,
         'it': true,
         'JSON': true,
-        'console': true,
-        'module': true
+        'console': true
     },
     'rules': {
         'indent': [

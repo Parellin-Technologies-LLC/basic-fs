@@ -13,15 +13,16 @@
     "start": "node index.js",
     "dev": "nodemon ./index.js",
     "test": "mocha",
-    "build": "~/nodec --tmpdir=../.tmp -o basic-fs ./index.js"
+    "build": "~/nodec --tmpdir=../.tmp -o basic-fs ./index.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "express": "^4.16.2",
     "formidable": "^1.1.1",
     "fs-extra": "^5.0.0",
     "http-response-class": "^1.1.4",
+    "mime-types": "^2.1.18",
     "on-finished": "^2.3.0",
-    "openport": "0.0.4",
     "uuid": "^3.1.0"
   },
   "devDependencies": {

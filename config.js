@@ -13,7 +13,9 @@ module.exports = {
     name,
     version,
     cwd: process.cwd(),
-    dataDirectory: 'data/',
+    SILENT: process.env.SILENT,
+    DATA: process.env.DATA,
+    PORT: process.env.PORT,
     dotfiles: 'allow',
     timeout: 20000,
     maximumURISize: 1600,
@@ -21,7 +23,6 @@ module.exports = {
     maximumPayloadSize: 53687091200,
     minimumHTTPVersion: 1.1,
     speedStandard: 8,
-    port: 3000,
     api: {
         home: {
             route: '/',
@@ -48,4 +49,4 @@ module.exports = {
 
 // TODO: create a "download" function to zip up files and download
 
-module.exports.root = join( module.exports.cwd, module.exports.dataDirectory );
+module.exports.root = join( module.exports.cwd, module.exports.DATA );
