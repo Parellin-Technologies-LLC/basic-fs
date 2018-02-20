@@ -43,6 +43,10 @@ module.exports = {
         data: {
             route: '/data*',
             method: [ 'GET', 'PUT', 'POST', 'DELETE' ]
+        },
+        form: {
+            route: '/form*',
+            method: [ 'GET', 'PUT', 'POST', 'DELETE' ]
         }
     }
 };

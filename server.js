@@ -12,6 +12,7 @@ const
     { resolve }      = require( 'path' ),
     { ensureDir }    = require( './lib/filesys' ),
     uploadData       = require( './lib/upload' ),
+    uploadForm       = require( './lib/uploadForm' ),
     getData          = require( './lib/getData' ),
     deleteData       = require( './lib/deleteData' ),
     home             = require( './lib/home' ),
@@ -42,10 +43,17 @@ class BasicFS
         kill.bind( this );
 
         this.express.use( require( './lib/inspection' )() );
+
         this.express.get( config.api.data.route, getData );
         this.express.post( config.api.data.route, uploadData );
         this.express.put( config.api.data.route, uploadData );
         this.express.delete( config.api.data.route, deleteData );
+
+        this.express.get( config.api.form.route, getData );
+        this.express.post( config.api.form.route, uploadForm );
+        this.express.put( config.api.form.route, uploadForm );
+        this.express.delete( config.api.form.route, deleteData );
+
         this.express.all( config.api.home.route, home );
         this.express.all( config.api.ping.route, ping );
         this.express.all( config.api.kill.route, kill );
