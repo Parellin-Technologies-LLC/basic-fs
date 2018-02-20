@@ -9,9 +9,10 @@ const
     config           = require( './config' ),
     http             = require( 'http' ),
     express          = require( 'express' ),
-    op               = require( 'openport' ),
+    { resolve }      = require( 'path' ),
     { ensureDir }    = require( './lib/filesys' ),
-    uploadData       = require( './lib/uploadData' ),
+    uploadData       = require( './lib/upload' ),
+    uploadForm       = require( './lib/uploadForm' ),
     getData          = require( './lib/getData' ),
     deleteData       = require( './lib/deleteData' ),
     home             = require( './lib/home' ),
@@ -20,7 +21,7 @@ const
     docs             = require( './lib/docs' ),
     methodNotAllowed = require( './lib/methodNotAllowed' ),
     lanIP            = require( './lib/lanIP' ),
-    logging          = [ 'development', 'dev', 'production', 'prod' ].indexOf( process.env.NODE_ENV ) !== -1;
+    logging          = process.env.SILENT === 'false';
 
 let isClosed = false;
 
@@ -42,10 +43,17 @@ class BasicFS
         kill.bind( this );
 
         this.express.use( require( './lib/inspection' )() );
+
         this.express.get( config.api.data.route, getData );
         this.express.post( config.api.data.route, uploadData );
         this.express.put( config.api.data.route, uploadData );
         this.express.delete( config.api.data.route, deleteData );
+
+        this.express.get( config.api.form.route, getData );
+        this.express.post( config.api.form.route, uploadForm );
+        this.express.put( config.api.form.route, uploadForm );
+        this.express.delete( config.api.form.route, deleteData );
+
         this.express.all( config.api.home.route, home );
         this.express.all( config.api.ping.route, ping );
         this.express.all( config.api.kill.route, kill );
@@ -59,6 +67,7 @@ class BasicFS
                         if( logging ) {
                             console.log( 'Received SIGINT, graceful shutdown...' );
                         }
+
                         this.shutdown( 0 );
                     } )
                     .on( 'uncaughtException', err => {
@@ -76,19 +85,12 @@ class BasicFS
                         if( logging ) {
                             console.log( `Received exit with code ${code}, graceful shutdown...` );
                         }
+
                         this.shutdown( code );
                     } );
 
-                ensureDir( config.dataDirectory )
-                    .then(
-                        () => new Promise(
-                            ( res, rej ) => op.find(
-                                { startingPort: config.port, endingPort: config.port + 50 },
-                                ( e, p ) => e ? rej( e ) : res( p )
-                            )
-                        )
-                    )
-                    .then( port => this.port = port )
+                ensureDir( config.DATA )
+                    .then( () => this.port = config.PORT )
                     .then( () => res( this ) )
                     .catch( rej );
             }
@@ -101,10 +103,12 @@ class BasicFS
             res => {
                 this.server = http.createServer( this.express );
 
-                this.server.listen( config.port, () => {
+                this.server.listen( config.PORT, () => {
                     if( logging ) {
-                        console.log( `BasicFS v${config.version} running on ${lanIP}:${config.port}` );
+                        console.log( `BasicFS v${config.version} running on ${lanIP}:${config.PORT}` );
+                        console.log( `  Serving data directory: ${resolve( config.DATA )}` );
                     }
+
                     res( this );
                 } );
             }

@@ -90,7 +90,7 @@ Use case:
         "name": "basic-fs",
         "version": "0.1.2",
         "cwd": "/Users/trashcan/GitHub/basic-fs",
-        "dataDirectory": "data/",
+        "DATA": "data/",
         "dotfiles": "allow",
         "timeout": 20000,
         "maximumURISize": 1600,
@@ -98,7 +98,6 @@ Use case:
         "maximumPayloadSize": 53687091200,
         "minimumHTTPVersion": 1.1,
         "speedStandard": 8,
-        "port": 3000,
         "api": {
             "home": {
                 "route": "/",
@@ -156,7 +155,7 @@ Use case:
 
 <br/>
 
-#### `GET /data/*`
+#### `GET /data/*` and `GET /form/*`
 > returns data specified in the uri parameters
 > Notes:
 > - if a directory is specified: returns a list of the contents in a directory
@@ -197,10 +196,11 @@ Use case:
 
 <br/>
 
-#### `POST /data/*`
+#### `POST /data/*` and `POST /form/*`
 > creates a folder or file if it does not exist
 > Notes:
-> - will **not** overwrite data
+> - `/form` will **not** overwrite data
+> - `/data` **will** overwrite data
 > - will create deep paths if they do not exist
 > - will accept bulk uploads
 
@@ -243,7 +243,7 @@ Use case:
 
 <br/>
 
-#### `PUT /data/*`
+#### `PUT /form/*`
 > updates a folder or file if it exists
 > Notes:
 > - **will** overwrite data
@@ -289,7 +289,7 @@ Use case:
 
 <br/>
 
-#### `DELETE /data/*`
+#### `DELETE /data/*` and `DELETE /form/*`
 > deletes a folder or file if it exists
 > Notes:
 > - **will** recursively delete a folder
