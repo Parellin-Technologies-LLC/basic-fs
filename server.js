@@ -6,143 +6,136 @@
 'use strict';
 
 const
-    config           = require( './config' ),
-    http             = require( 'http' ),
-    express          = require( 'express' ),
-    { resolve }      = require( 'path' ),
-    { ensureDir }    = require( './lib/filesys' ),
-    uploadData       = require( './lib/upload' ),
-    uploadForm       = require( './lib/uploadForm' ),
-    getData          = require( './lib/getData' ),
-    deleteData       = require( './lib/deleteData' ),
-    home             = require( './lib/home' ),
-    ping             = require( './lib/ping' ),
-    kill             = require( './lib/kill' ),
-    docs             = require( './lib/docs' ),
-    methodNotAllowed = require( './lib/methodNotAllowed' ),
-    lanIP            = require( './lib/lanIP' ),
-    logging          = process.env.SILENT === 'false';
+	http          = require( 'http' ),
+	express       = require( 'express' ),
+	{ resolve }   = require( 'path' ),
+	{ ensureDir } = require( './lib/filesys' ),
+	{ bind }      = require( './lib/kill' ),
+	lanIP         = require( './lib/lanIP' ),
+	logging       = process.env.SILENT === 'false';
 
 let isClosed = false;
 
 class BasicFS
 {
-    constructor()
-    {
-        this.expressInitialize();
-    }
-
-    expressInitialize()
-    {
-        this.express = express();
-        this.express.disable( 'x-powered-by' );
-    }
-
-    initialize()
-    {
-        kill.bind( this );
-
-        this.express.use( require( './lib/inspection' )() );
-
-        this.express.get( config.api.data.route, getData );
-        this.express.post( config.api.data.route, uploadData );
-        this.express.put( config.api.data.route, uploadData );
-        this.express.delete( config.api.data.route, deleteData );
-
-        this.express.get( config.api.form.route, getData );
-        this.express.post( config.api.form.route, uploadForm );
-        this.express.put( config.api.form.route, uploadForm );
-        this.express.delete( config.api.form.route, deleteData );
-
-        this.express.all( config.api.home.route, home );
-        this.express.all( config.api.ping.route, ping );
-        this.express.all( config.api.kill.route, kill );
-        this.express.all( config.api.docs.route, docs );
-        this.express.all( '*', methodNotAllowed );
-
-        return new Promise(
-            ( res, rej ) => {
-                process
-                    .on( 'SIGINT', () => {
-                        if( logging ) {
-                            console.log( 'Received SIGINT, graceful shutdown...' );
-                        }
-
-                        this.shutdown( 0 );
-                    } )
-                    .on( 'uncaughtException', err => {
-                        if( logging ) {
-                            console.log( 'global status: ' + ( err.status || 'no status' ) + '\n' + JSON.stringify( err.message ) + '\n' + JSON.stringify( err.stack ) );
-                            console.log( err );
-                        }
-                    } )
-                    .on( 'unhandledRejection', error => {
-                        if( logging ) {
-                            console.log( error );
-                        }
-                    } )
-                    .on( 'exit', code => {
-                        if( logging ) {
-                            console.log( `Received exit with code ${code}, graceful shutdown...` );
-                        }
-
-                        this.shutdown( code );
-                    } );
-
-                ensureDir( config.DATA )
-                    .then( () => this.port = config.PORT )
-                    .then( () => res( this ) )
-                    .catch( rej );
-            }
-        );
-    }
-
-    start()
-    {
-        return new Promise(
-            res => {
-                this.server = http.createServer( this.express );
-
-                this.server.listen( config.PORT, () => {
-                    if( logging ) {
-                        console.log( `BasicFS v${config.version} running on ${lanIP}:${config.PORT}` );
-                        console.log( `  Serving data directory: ${resolve( config.DATA )}` );
-                    }
-
-                    res( this );
-                } );
-            }
-        );
-    }
-
-    shutdown( code )
-    {
-        if( !logging ) {
-            this.server.close();
-            return;
-        }
-
-        code = code || 0;
-
-        if( this.server ) {
-            this.server.close();
-        }
-
-        if( isClosed ) {
-            if( logging ) {
-                console.log( 'Shutdown after SIGINT, forced shutdown...' );
-            }
-            process.exit( 0 );
-        }
-
-        isClosed = true;
-
-        if( logging ) {
-            console.log( 'server exiting with code:', code );
-        }
-
-        process.exit( code );
-    }
+	constructor( config )
+	{
+		process.config = config;
+		bind( this );
+	}
+	
+	hookRoute( item )
+	{
+		item.exec = require( resolve( item.exec ) );
+		
+		this.express[ item.method.toLowerCase() ](
+			item.route,
+			( req, res ) => res ?
+				item.exec( req, res ) :
+				res.status( 500 ).send( 'unknown' )
+		);
+		
+		return item;
+	}
+	
+	expressInitialize()
+	{
+		this.express = express();
+		this.express.disable( 'x-powered-by' );
+		
+		this.express.use( require( './lib/inspection' )() );
+		
+		process.config.api = process.config.api
+			.map( item => this.hookRoute( item ) );
+	}
+	
+	initialize()
+	{
+		this.expressInitialize();
+		
+		return new Promise(
+			( res, rej ) => {
+				process
+					.on( 'SIGINT', () => {
+						if( logging ) {
+							console.log( 'Received SIGINT, graceful shutdown...' );
+						}
+						
+						this.shutdown( 0 );
+					} )
+					.on( 'uncaughtException', err => {
+						if( logging ) {
+							console.log( 'global status: ' + ( err.status || 'no status' ) + '\n' + JSON.stringify( err.message ) + '\n' + JSON.stringify( err.stack ) );
+							console.log( err );
+						}
+					} )
+					.on( 'unhandledRejection', error => {
+						if( logging ) {
+							console.log( error );
+						}
+					} )
+					.on( 'exit', code => {
+						if( logging ) {
+							console.log( `Received exit with code ${code}, graceful shutdown...` );
+						}
+						
+						this.shutdown( code );
+					} );
+				
+				ensureDir( process.config.data )
+					.then( () => this.port = process.config.port )
+					.then( () => res( this ) )
+					.catch( rej );
+			}
+		);
+	}
+	
+	start()
+	{
+		return new Promise(
+			res => {
+				this.server = http.createServer( this.express );
+				
+				this.server.listen( process.config.port, () => {
+					if( logging ) {
+						console.log( `BasicFS v${process.config.version} running on ${lanIP}:${process.config.port}` );
+						console.log( `  Serving data directory: ${resolve( process.config.data )}` );
+					}
+					
+					res( this );
+				} );
+			}
+		);
+	}
+	
+	shutdown( code )
+	{
+		if( !logging ) {
+			this.server.close();
+			return;
+		}
+		
+		code = code || 0;
+		
+		if( this.server ) {
+			this.server.close();
+		}
+		
+		if( isClosed ) {
+			if( logging ) {
+				console.log( 'Shutdown after SIGINT, forced shutdown...' );
+			}
+			process.exit( 0 );
+		}
+		
+		isClosed = true;
+		
+		if( logging ) {
+			console.log( 'server exiting with code:', code );
+		}
+		
+		process.exit( code );
+	}
 }
 
-module.exports = () => new BasicFS();
+module.exports = ( config = require( './config' ) ) => new BasicFS( config );

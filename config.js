@@ -6,51 +6,91 @@
 'use strict';
 
 const
-    { version, name } = require( './package.json' ),
-    { resolve }          = require( 'path' );
+	{ version, name } = require( './package.json' ),
+	{ resolve }       = require( 'path' );
 
 module.exports = {
-    name,
-    version,
-    cwd: process.cwd(),
-    SILENT: process.env.SILENT,
-    DATA: process.env.DATA,
-    PORT: process.env.PORT,
-    dotfiles: 'allow',
-    timeout: 20000,
-    maximumURISize: 1600,
-    maximumHeaderSize: 4000,
-    maximumPayloadSize: 53687091200,
-    minimumHTTPVersion: 1.1,
-    speedStandard: 8,
-    api: {
-        home: {
-            route: '/',
-            method: [ 'ALL' ]
-        },
-        ping: {
-            route: '/ping',
-            method: [ 'ALL' ]
-        },
-        kill: {
-            route: '/kill',
-            method: [ 'ALL' ]
-        },
-        docs: {
-            route: '/docs',
-            method: [ 'ALL' ]
-        },
-        data: {
-            route: '/data*',
-            method: [ 'GET', 'PUT', 'POST', 'DELETE' ]
-        },
-        form: {
-            route: '/form*',
-            method: [ 'GET', 'PUT', 'POST', 'DELETE' ]
-        }
-    }
+	name,
+	version,
+	cwd: process.cwd(),
+	silent: process.env.SILENT,
+	data: process.env.DATA,
+	port: process.env.PORT,
+	root: resolve( process.env.DATA ),
+	dotfiles: 'allow',
+	timeout: 20000,
+	maximumURISize: 1600,
+	maximumHeaderSize: 4000,
+	maximumPayloadSize: 53687091200,
+	minimumHTTPVersion: 1.1,
+	speedStandard: 8,
+	api: [
+		{
+			route: '/',
+			method: 'ALL',
+			exec: resolve( './lib/home' )
+		},
+		{
+			route: '/ping',
+			method: 'ALL',
+			exec: resolve( './lib/ping' )
+		},
+		{
+			route: '/kill',
+			method: 'ALL',
+			exec: resolve( './lib/kill' )
+		},
+		{
+			route: '/docs',
+			method: 'ALL',
+			exec: resolve( './lib/docs' )
+		},
+		{
+			route: '/data*',
+			method: 'GET',
+			exec: resolve( './lib/getData' )
+		},
+		{
+			route: '/data*',
+			method: 'PUT',
+			exec: resolve( './lib/upload' )
+		},
+		{
+			route: '/data*',
+			method: 'POST',
+			exec: resolve( './lib/upload' )
+		},
+		{
+			route: '/data*',
+			method: 'DELETE',
+			exec: resolve( './lib/deleteData' )
+		},
+		{
+			route: '/form*',
+			method: 'GET',
+			exec: resolve( './lib/getData' )
+		},
+		{
+			route: '/form*',
+			method: 'PUT',
+			exec: resolve( './lib/uploadForm' )
+		},
+		{
+			route: '/form*',
+			method: 'POST',
+			exec: resolve( './lib/uploadForm' )
+		},
+		{
+			route: '/form*',
+			method: 'DELETE',
+			exec: resolve( './lib/deleteData' )
+		},
+		{
+			route: '*',
+			method: 'ALL',
+			exec: resolve( './lib/methodNotAllowed' )
+		}
+	]
 };
 
 // TODO: create a "download" function to zip up files and download
-
-module.exports.root = resolve( module.exports.DATA );
