@@ -38,7 +38,10 @@ RUN apt-get install -y build-essential
 RUN apt-get clean
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install -y awscli unzip
+RUN apt-get install build-essential -y
+RUN apt-get install gcc g++ -y
+RUN apt-get install squashfs-tools -y
+RUN apt-get install awscli unzip -y
 
 ENV NODE_VERSION="8.11.1"
 
