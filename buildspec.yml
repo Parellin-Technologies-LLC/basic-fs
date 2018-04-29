@@ -1,4 +1,8 @@
-version: 0.1
+version: 0.2
+
+env:
+  variables:
+  	NAME: "basic-fs"
 
 phases:
   install:
@@ -21,7 +25,13 @@ phases:
       - ./nodec -o basic-fs ./index.js
   post_build:
     commands:
+      - echo $(./basic-fs -v)
+      - echo $NAME
+      - echo $(node ./index.js -v)
+      - echo $(uname -s)
+      - echo $(uname -p)
+      - echo $NAME-$(node ./index.js -v)-$(uname -s)-$(uname -p)
       - echo Build completed on $(date)
 artifacts:
   files:
-    - basic-fs
+    - $NAME-$(node ./index.js -v)-$(uname -s)-$(uname -p)
