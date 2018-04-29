@@ -3,8 +3,9 @@ version: 0.1
 phases:
   install:
     commands:
-      - curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
-      - apt-get install -y nodejs
+      - apt-get install build-essential -y
+      - apt-get update -y
+      - apt-get upgrade -y
       - echo $(node -v)
       - echo $(npm -v)
       - npm install -g mocha

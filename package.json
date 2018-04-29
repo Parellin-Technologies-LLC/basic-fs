@@ -14,7 +14,8 @@
 		"dev": "nodemon ./index.js",
 		"test": "mocha",
 		"build": "~/nodec --tmpdir=../.tmp -o basic-fs ./index.js",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"cleanInstall": "rm -rf node_modules/ package-lock.json && npm i"
 	},
 	"dependencies": {
 		"express": "^4.16.2",
