@@ -23,7 +23,7 @@ module.exports = {
 	maximumHeaderSize: 4000,
 	maximumPayloadSize: 53687091200,
 	minimumHTTPVersion: 1.1,
-	speedStandard: 8,
+	speedStandard: 0.08,
 	api: [
 		{
 			route: '/',
