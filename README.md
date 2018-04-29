@@ -6,6 +6,8 @@
             alt="basic-fs logo"
             src="https://github.com/Parellin-Technologies-LLC/basic-fs/blob/master/logo.png?raw=true" />
     </a>
+    
+![Build Status](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiNTIvRC9aN3lyT1NJeWhnZXVxY1N6Y0QrUmh0dnhyZnB2b1RseWhLQ1BJMXh4RFBkSmlCLzBLckJLczRaeGN1UVhuMTJ6NlFub3BWTU5wK0MyZ090TDI0PSIsIml2UGFyYW1ldGVyU3BlYyI6IjY1U0hGdWpkOUFPUHJWejciLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 </p>
 
 # basic-fs
