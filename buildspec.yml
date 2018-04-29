@@ -18,14 +18,9 @@ phases:
   build:
     commands:
       - npm test
-      - ./nodec -o basic-fs ./index.js
+      - ./nodec -o basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p) ./index.js
   post_build:
     commands:
-      - echo $(./basic-fs -v)
-      - echo $(node ./index.js -v)
-      - echo $(uname -s)
-      - echo $(uname -p)
-      - echo basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
       - echo Build completed on $(date)
 artifacts:
   files:
