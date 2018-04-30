@@ -21,7 +21,8 @@ phases:
       - ./nodec -o basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p) ./index.js
   post_build:
     commands:
+      - zip binary.zip basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
       - echo Build completed on $(date)
 artifacts:
   files:
-    - basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
+    - binary.zip
