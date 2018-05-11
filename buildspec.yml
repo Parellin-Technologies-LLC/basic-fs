@@ -11,6 +11,7 @@ phases:
       - npm install -g mocha
       - curl -L http://enclose.io/nodec/nodec-linux-x64.gz | gunzip > nodec
       - chmod +x nodec
+      - ls
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
