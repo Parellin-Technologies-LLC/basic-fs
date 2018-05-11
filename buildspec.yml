@@ -25,4 +25,4 @@ phases:
       - echo Build completed on $(date)
 artifacts:
   files:
-    - binary.zip
+    basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
