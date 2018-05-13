@@ -8,6 +8,7 @@
 const
 	http          = require( 'http' ),
 	express       = require( 'express' ),
+	basicauth     = require( 'express-basic-auth' ),
 	{ resolve }   = require( 'path' ),
 	{ ensureDir } = require( './lib/filesys' ),
 	{ bind }      = require( './lib/kill' ),
@@ -38,12 +39,30 @@ class BasicFS
 		return item;
 	}
 	
+	authorizer( username, password, cb )
+	{
+		const challenge = process.config.users[ username ];
+		
+		return cb( null, challenge && challenge === password );
+	}
+	
 	expressInitialize()
 	{
 		this.express = express();
 		this.express.disable( 'x-powered-by' );
 		
 		this.express.use( require( './lib/inspection' )() );
+		
+		if( process.config.authentication === 'basicauth' ) {
+			const { challenge, realm } = process.config;
+			
+			this.express.use( basicauth( {
+				authorizeAsync: true,
+				authorizer: this.authorizer,
+				challenge,
+				realm
+			} ) );
+		}
 		
 		process.config.api = process.config.api
 			.map( item => this.hookRoute( item ) );
@@ -69,9 +88,9 @@ class BasicFS
 							console.log( err );
 						}
 					} )
-					.on( 'unhandledRejection', error => {
+					.on( 'unhandledRejection', err => {
 						if( logging ) {
-							console.log( error );
+							console.log( err );
 						}
 					} )
 					.on( 'exit', code => {

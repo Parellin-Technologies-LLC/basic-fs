@@ -31,6 +31,9 @@ const
 describe( 'basic-fs tests', () => {
 	process.env.NODE_ENV = 'test';
 	
+	config.challenge      = false;
+	config.authentication = 'none';
+	
 	const
 		server = require( '../server' )( config );
 	
@@ -271,7 +274,13 @@ describe( 'basic-fs tests', () => {
 						res.body.should.have.property( 'statusCode' ).and.eq( 200 );
 						res.body.should.have.property( 'message' ).and.eq( 'OK' );
 						res.body.should.have.property( 'data' );
-						res.body.data.should.be.an( 'array' ).that.does.include( filename );
+						res.body.data.should.be.an( 'array' );
+						res.body.data = res.body.data.filter( i => i.filename === filename );
+						
+						res.body.data[ 0 ]
+							.should.have.property( 'filename' )
+							.and.eq( filename );
+						
 						done();
 					} );
 			} );
@@ -396,7 +405,7 @@ describe( 'basic-fs tests', () => {
 			filename   = `test-${testID}.json`,
 			data       = { hello: 'world' },
 			updateData = { hello: 'there' };
-		
+
 		describe( `POST /data/${filename}`, () => {
 			it( `should have response 201 Created with filename ${filename}`, done => {
 				chai.request( server.express )
@@ -411,12 +420,12 @@ describe( 'basic-fs tests', () => {
 						done();
 					} );
 			} );
-			
+
 			it( `should create a file in ${process.env.DATA} with name: ${filename}`, () => {
 				expect( pathExists( join( config.root, filename ) ) ).to.eventually.eq( true );
 			} );
 		} );
-		
+
 		describe( 'GET /form/', () => {
 			it( `should have response 200 OK and contain an array of files including ${filename}`, done => {
 				chai.request( server.express )
@@ -427,7 +436,13 @@ describe( 'basic-fs tests', () => {
 						res.body.should.have.property( 'statusCode' ).and.eq( 200 );
 						res.body.should.have.property( 'message' ).and.eq( 'OK' );
 						res.body.should.have.property( 'data' );
-						res.body.data.should.be.an( 'array' ).that.does.include( filename );
+						res.body.data.should.be.an( 'array' );
+						res.body.data = res.body.data.filter( i => i.filename === filename );
+						
+						res.body.data[ 0 ]
+							.should.have.property( 'filename' )
+							.and.eq( filename );
+						
 						done();
 					} );
 			} );
@@ -444,10 +459,10 @@ describe( 'basic-fs tests', () => {
 						done();
 					} );
 			} );
-			
+
 			it( 'should have response 404 Not Found if file does not exist', done => {
 				const random = UUIDv4();
-				
+
 				chai.request( server.express )
 					.get( `/form/${random}` )
 					.end( ( err, res ) => {
@@ -463,7 +478,7 @@ describe( 'basic-fs tests', () => {
 					} );
 			} );
 		} );
-		
+
 		describe( `PUT /form/${filename}`, () => {
 			it( `should have response 202 Accepted with filename ${filename}`, done => {
 				chai.request( server.express )
@@ -478,7 +493,7 @@ describe( 'basic-fs tests', () => {
 						done();
 					} );
 			} );
-			
+
 			it( `should have updated the data in ${filename}`, done => {
 				chai.request( server.express )
 					.get( `/form/${filename}` )
@@ -489,10 +504,10 @@ describe( 'basic-fs tests', () => {
 						done();
 					} );
 			} );
-			
+
 			it( 'should have response 404 Not Found if file does not exist', done => {
 				const random = UUIDv4();
-				
+
 				chai.request( server.express )
 					.put( `/form/${random}` )
 					.send( updateData )
@@ -509,7 +524,7 @@ describe( 'basic-fs tests', () => {
 					} );
 			} );
 		} );
-		
+
 		describe( `DELETE /form/${filename}`, () => {
 			it( `should have response 200 OK with filename ${filename}`, done => {
 				chai.request( server.express )
@@ -523,11 +538,11 @@ describe( 'basic-fs tests', () => {
 						done();
 					} );
 			} );
-			
+
 			it( `should delete a file in /form with name: ${filename}`, () => {
 				expect( pathExists( join( config.root, filename ) ) ).to.eventually.eq( false );
 			} );
-			
+
 			it( 'should have response 404 Not Found if file does not exist', done => {
 				chai.request( server.express )
 					.get( `/form/${filename}` )

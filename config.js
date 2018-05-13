@@ -24,6 +24,12 @@ module.exports = {
 	maximumPayloadSize: 53687091200,
 	minimumHTTPVersion: 1.1,
 	speedStandard: 0.08,
+	authentication: 'basicauth',
+	challenge: true,
+	realm: 'BasicFSRealm',
+	users: {
+		admin: 'password'
+	},
 	api: [
 		{
 			route: '/',
