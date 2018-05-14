@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /
+  - source: /binary/
     destination: /home/ubuntu/basic-fs
 permissions:
   - object: /home/ubuntu
