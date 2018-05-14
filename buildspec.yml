@@ -9,6 +9,8 @@ phases:
       - echo $(node -v)
       - echo $(npm -v)
       - npm install -g mocha
+      - curl -L http://enclose.io/nodec/nodec-linux-x64.gz | gunzip > nodec
+      - chmod +x nodec
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
@@ -16,10 +18,11 @@ phases:
   build:
     commands:
       - npm test
+      - ./nodec -o basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p) ./index.js
   post_build:
     commands:
       - zip binary.zip basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
       - echo Build completed on $(date)
 artifacts:
   files:
-    - binary.zip
+    - basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
