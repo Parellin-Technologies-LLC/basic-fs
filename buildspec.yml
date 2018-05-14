@@ -5,12 +5,9 @@ phases:
     commands:
       - apt-get update -y
       - apt-get upgrade -y
-      - echo $(mksquashfs -version)
       - echo $(node -v)
       - echo $(npm -v)
       - npm install -g mocha
-      - curl -L http://enclose.io/nodec/nodec-linux-x64.gz | gunzip > nodec
-      - chmod +x nodec
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
@@ -18,11 +15,10 @@ phases:
   build:
     commands:
       - npm test
-      - ./nodec -o basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p) ./index.js
   post_build:
     commands:
-      - zip binary.zip basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
+      - zip binary.zip -r ./* --exclude=*.DS_Store* --exclude=*.git* --exclude=*node_modules*
       - echo Build completed on $(date)
 artifacts:
   files:
-    - basicfs-$(node ./index.js -v)-$(uname -s)-$(uname -p)
+    - binary.zip
