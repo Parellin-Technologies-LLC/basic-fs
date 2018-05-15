@@ -17,9 +17,7 @@ phases:
       - npm test
   post_build:
     commands:
-      - zip binary.zip -r ./* --exclude=*.DS_Store* --exclude=*.git* --exclude=*node_modules*
       - echo Build completed on $(date)
 artifacts:
   files:
-    - appspec.yml
-    - binary.zip
+      - ./*
