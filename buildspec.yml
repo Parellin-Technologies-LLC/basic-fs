@@ -21,4 +21,5 @@ phases:
       - echo Build completed on $(date)
 artifacts:
   files:
+    - appspec.yml
     - binary.zip
