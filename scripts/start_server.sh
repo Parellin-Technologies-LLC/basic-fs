@@ -1,3 +1,5 @@
 #!/bin/bash
 
-pm2 start ../index.js
+cd /home/ubuntu/basic-fs
+
+pm2 start index.js
