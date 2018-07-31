@@ -10,8 +10,6 @@ clover.xml
 .tags
 .tags1
 *.ss*
-*idea*
-*.idea*
 
 # Node logs
 npm-debug.log*
@@ -46,7 +44,6 @@ jspm_packages
 # Yeoman/bow/&c.
 bower_components/
 build/
-dist/
 
 # Linux ignores
 *~
@@ -491,6 +488,7 @@ paket-files/
 # JetBrains Rider
 *.sln.iml
 
+data/*.zip
+archive.tar*
 
-
-data/
+dist/

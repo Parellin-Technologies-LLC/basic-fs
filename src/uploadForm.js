@@ -6,6 +6,7 @@
 'use strict';
 
 const
+	gonfig     = require( 'gonfig' ),
 	formidable = require( 'formidable' ),
 	Response   = require( 'http-response-class' ),
 	UUIDv4     = require( 'uuid/v4' ),
@@ -18,35 +19,35 @@ const
 		saveFile,
 		ensureDir,
 		moveFile
-	}          = require( './filesys' ),
+	}          = require( '../lib/filesys' ),
 	mime       = require( 'mime-types' );
 
 module.exports = ( req, res ) => {
 	const
 		form   = new formidable.IncomingForm(),
 		method = req.method;
-	
-	form.maxFileSize = process.config.maximumPayloadSize;
-	
+
+	form.maxFileSize = gonfig.get( 'server' ).maximumPayloadSize;
+
 	// form.on( 'progress', function( bytesReceived, bytesExpected ) {
 	// 	console.log( ( ( bytesReceived / bytesExpected ) * 100 ) );
 	// } );
-	
+
 	form.parse( req, ( err, fields, files ) => {
 		if( err ) {
 			return res.respond( new Response( 400, err.stack || err.message || err ) );
 		}
-		
+
 		const
 			validation = [],
 			ops        = [];
-		
+
 		if( typeof fields === 'object' && !Object.keys( files ).length ) {
 			const
 				ext   = mime.extension( req.headers[ 'content-type' ] || req.headers[ 'Content-Type' ] ),
 				fname = req.params[ 0 ] === '/' ? UUIDv4() + ( ext ? `.${ext}` : '' ) : req.params[ 0 ],
-				fpath = join( process.config.root, fname );
-			
+				fpath = join( gonfig.get( 'dataDir' ), fname );
+
 			validation.push(
 				pathExists( fpath )
 					.then( exists => {
@@ -77,8 +78,8 @@ module.exports = ( req, res ) => {
 		} else {
 			Object.keys( files ).forEach(
 				i => {
-					const fpath = join( process.config.root, req.params[ 0 ] || '', files[ i ].name || '' );
-					
+					const fpath = join( gonfig.get( 'dataDir' ), req.params[ 0 ] || '', files[ i ].name || '' );
+
 					validation.push(
 						pathExists( fpath )
 							.then( exists => {
@@ -99,7 +100,7 @@ module.exports = ( req, res ) => {
 				}
 			);
 		}
-		
+
 		return Promise.all( validation )
 			.then( () => Promise.all( ops ) )
 			.then( d => res.respond( new Response( method === 'PUT' ? 202 : 201, d ) ) )
@@ -107,11 +108,11 @@ module.exports = ( req, res ) => {
 				if( e.code === 'EPERM' ) {
 					res.respond( new Response( 400, 'No data provided' ) );
 				} else if( e.code === 'ENOTDIR' ) {
-					res.respond( new Response( 400, `${e.path} expected to be directory` ) );
+					res.respond( new Response( 400, `${ e.path } expected to be directory` ) );
 				} else if( e.code === 'ENOENT' ) {
 					res.respond( new Response( 404, e.path ) );
 				} else if( e.code === 'EEXIST' ) {
-					res.respond( new Response( 409, `File or path already exists: ${e.path}` ) );
+					res.respond( new Response( 409, `File or path already exists: ${ e.path }` ) );
 				} else {
 					res.respond( new Response( e.statusCode || 500, e.stack || e.message || e ) );
 				}

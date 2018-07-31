@@ -5,14 +5,11 @@
  *******************************************************************************************************/
 'use strict';
 
-const Response = require( 'http-response-class' );
-let server;
+const
+	server   = require( '../server' ),
+	Response = require( 'http-response-class' );
 
 module.exports = ( req, res ) => {
 	res.respond( new Response( 200, 'server terminated' ) );
 	server.shutdown( 0 );
-};
-
-module.exports.bind = s => {
-	server = s;
 };

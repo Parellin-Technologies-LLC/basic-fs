@@ -6,17 +6,17 @@
 'use strict';
 
 const
-	config   = require( '../config' ),
+	gonfig   = require( 'gonfig' ),
 	Response = require( 'http-response-class' ),
 	{ join } = require( 'path' ),
 	{
 		stat,
 		listFiles,
 		isFile
-	}        = require( './filesys' );
+	}        = require( '../lib/filesys' );
 
 module.exports = ( req, res ) => {
-	const fpath = join( config.root, req.params[ 0 ] || '' );
+	const fpath = join( gonfig.get( 'dataDir' ), req.params[ 0 ] || '' );
 	
 	return isFile( fpath )
 		.then(
