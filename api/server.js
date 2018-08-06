@@ -10,6 +10,7 @@ const
 	http        = require( 'http' ),
 	express     = require( 'express' ),
 	bodyParser  = require( 'body-parser' ),
+	favicon     = require( 'serve-favicon' ),
 	{ resolve } = require( 'path' ),
 	debug       = require( './debug' );
 
@@ -19,44 +20,49 @@ class BasicFS
 {
 	constructor()
 	{
-
+	
 	}
-
+	
 	hookRoute( item )
 	{
 		item.exec = require( resolve( item.exec ) );
-
+		
 		this.express[ item.method.toLowerCase() ](
 			item.route,
-			( req, res ) => res ?
-				item.exec( req, res ) :
+			( req, res ) => res && res.locals ?
+				item.exec( req, res.locals ) :
 				res.status( 500 ).send( 'unknown' )
 		);
-
+		
 		return item;
 	}
-
+	
 	expressInitialize()
 	{
 		this.express = express();
-
+		
 		this.express.disable( 'x-powered-by' );
+		this.express.use( favicon( resolve( `${ gonfig.get( 'cwd' ) }ui/assets/favicon/favicon.ico` ) ) );
+		
 		this.express.use( bodyParser.raw( { limit: '5gb' } ) );
 		this.express.use( bodyParser.json() );
+		
 		this.express.use( require( './lib/inspection' )() );
-
+		
 		gonfig.set( 'api', gonfig.get( 'api' ).map( item => this.hookRoute( item ) ) );
-
+		
 		this.express.use( require( './lib/captureErrors' )() );
 	}
-
+	
 	initialize()
 	{
 		this.expressInitialize();
-
+		
 		process
-			.on( 'uncaughtException', err => debug( gonfig.getErrorReport( err ) ) )
-			.on( 'unhandledRejection', err => debug( gonfig.getErrorReport( err ) ) )
+		// .on( 'uncaughtException', err => debug( gonfig.getErrorReport( err ) ) )
+		// .on( 'unhandledRejection', err => debug( gonfig.getErrorReport( err ) ) )
+			.on( 'uncaughtException', err => debug( err ) )
+			.on( 'unhandledRejection', err => debug( err ) )
 			.on( 'SIGINT', () => {
 				debug( 'Received SIGINT, graceful shutdown...' );
 				this.shutdown( 0 );
@@ -65,16 +71,16 @@ class BasicFS
 				debug( `Received exit with code ${ code }, graceful shutdown...` );
 				this.shutdown( code );
 			} );
-
+		
 		return this;
 	}
-
+	
 	start()
 	{
 		return new Promise(
 			res => {
 				this.server = http.createServer( this.express );
-
+				
 				this.server.listen(
 					gonfig.get( 'server' ).port,
 					() => {
@@ -83,27 +89,27 @@ class BasicFS
 							`v${ gonfig.get( 'version' ) } ` +
 							`running on ${ gonfig.get( 'lanip' ) }:${ gonfig.get( 'server' ).port }`
 						);
-
+						
 						res( this );
 					}
 				);
 			}
 		);
 	}
-
+	
 	shutdown( code = 0 )
 	{
 		if( this.server ) {
 			this.server.close();
 		}
-
+		
 		if( isClosed ) {
 			debug( 'Shutdown after SIGINT, forced shutdown...' );
 			process.exit( 0 );
 		}
-
+		
 		isClosed = true;
-
+		
 		debug( `server exiting with code: ${ code }` );
 		process.exit( code );
 	}

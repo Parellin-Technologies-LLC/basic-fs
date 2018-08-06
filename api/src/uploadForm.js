@@ -26,28 +26,28 @@ module.exports = ( req, res ) => {
 	const
 		form   = new formidable.IncomingForm(),
 		method = req.method;
-
+	
 	form.maxFileSize = gonfig.get( 'server' ).maximumPayloadSize;
-
+	
 	// form.on( 'progress', function( bytesReceived, bytesExpected ) {
 	// 	console.log( ( ( bytesReceived / bytesExpected ) * 100 ) );
 	// } );
-
+	
 	form.parse( req, ( err, fields, files ) => {
 		if( err ) {
 			return res.respond( new Response( 400, err.stack || err.message || err ) );
 		}
-
+		
 		const
 			validation = [],
 			ops        = [];
-
+		
 		if( typeof fields === 'object' && !Object.keys( files ).length ) {
 			const
 				ext   = mime.extension( req.headers[ 'content-type' ] || req.headers[ 'Content-Type' ] ),
-				fname = req.params[ 0 ] === '/' ? UUIDv4() + ( ext ? `.${ext}` : '' ) : req.params[ 0 ],
+				fname = req.params[ 0 ] === '/' ? UUIDv4() + ( ext ? `.${ ext }` : '' ) : req.params[ 0 ],
 				fpath = join( gonfig.get( 'dataDir' ), fname );
-
+			
 			validation.push(
 				pathExists( fpath )
 					.then( exists => {
@@ -79,7 +79,7 @@ module.exports = ( req, res ) => {
 			Object.keys( files ).forEach(
 				i => {
 					const fpath = join( gonfig.get( 'dataDir' ), req.params[ 0 ] || '', files[ i ].name || '' );
-
+					
 					validation.push(
 						pathExists( fpath )
 							.then( exists => {
@@ -100,12 +100,14 @@ module.exports = ( req, res ) => {
 				}
 			);
 		}
-
+		
 		return Promise.all( validation )
 			.then( () => Promise.all( ops ) )
 			.then( d => res.respond( new Response( method === 'PUT' ? 202 : 201, d ) ) )
 			.catch( e => {
-				if( e.code === 'EPERM' ) {
+				if( e instanceof Response ) {
+					res.respond( e );
+				} else if( e.code === 'EPERM' ) {
 					res.respond( new Response( 400, 'No data provided' ) );
 				} else if( e.code === 'ENOTDIR' ) {
 					res.respond( new Response( 400, `${ e.path } expected to be directory` ) );

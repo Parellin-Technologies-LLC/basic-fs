@@ -1,0 +1,31 @@
+<nav id="mainNav" class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+	<a class="navbar-brand" href="#">
+		<img src="/assets/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+		<span data-bind="text: title"></span>
+	</a>
+
+	<button class="navbar-toggler"
+			type="button"
+			data-toggle="collapse"
+			data-target="#mainNavBar"
+			aria-controls="mainNavBar"
+			aria-expanded="false" aria-label="Toggle nav">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div id="mainNavBar" class="collapse navbar-collapse">
+		<ul id="toolbar" class="navbar-nav mr-auto" data-bind="foreach: navLeftItems">
+			<li class="nav-item" data-bind="visible: display">
+				<a class="nav-link" data-bind="attr: { href: href }, css: isActive, text: text"></a>
+			</li>
+		</ul>
+
+		<ul class="navbar-nav my-2 my-md-0" data-bind="foreach: navRightItems">
+			<li class="nav-item" data-bind="visible: display, attr: { class: _class }">
+				<button data-bind="css: buttonType, text: text, click: click"></button>
+			</li>
+		</ul>
+
+		<div id="alert" class="nav-item"></div>
+	</div>
+</nav>

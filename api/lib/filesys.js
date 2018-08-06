@@ -7,15 +7,15 @@
 
 const
 	{
-		readFile,
-		readdir,
-		outputFile,
-		lstat,
-		ensureDir,
 		pathExists,
-		remove,
+		lstat,
 		emptyDir,
-		move: moveFile
+		ensureDir,
+		readdir,
+		readFile,
+		move: moveFile,
+		outputFile,
+		remove
 	} = require( 'fs-extra' );
 
 module.exports = {

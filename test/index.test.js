@@ -42,7 +42,7 @@ describe( 'basic-fs tests', () => {
 	config.authentication = 'none';
 
 	const
-		server = require( '../server' );
+		server = require( '../api/server' );
 
 	it( 'should initialize and set the port', () => {
 		expect( server.initialize() ).to.eventually.have.property( 'PORT' );

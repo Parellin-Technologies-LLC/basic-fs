@@ -19,7 +19,11 @@ module.exports = {
 		it: true,
 		JSON: true,
 		console: true,
-		Blob: true
+		Blob: true,
+		$: true,
+		window: true,
+		location: true,
+		document: true
 	},
 	rules: {
 		indent: [

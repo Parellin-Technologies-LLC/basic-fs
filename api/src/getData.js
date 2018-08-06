@@ -23,7 +23,7 @@ module.exports = ( req, res ) => {
 			d => {
 				if( d ) {
 					return res.sendFile( fpath, {
-						dotfiles: config.dotfiles,
+						dotfiles: gonfig.get( 'server' ).dotfiles,
 						headers: { 'x-timestamp': Date.now(), 'x-sent': true }
 					} );
 				} else {
@@ -47,12 +47,10 @@ module.exports = ( req, res ) => {
 			}
 		)
 		.catch(
-			e => {
-				if( e.code === 'ENOENT' ) {
-					res.respond( new Response( 404, req.params[ 0 ] ) );
-				} else {
-					res.respond( new Response( e.statusCode || 500, e.stack || e.message || e ) );
-				}
-			}
+			e => e instanceof Response ?
+				res.respond( e ) :
+				e.code === 'ENOENT' ?
+					res.respond( new Response( 404, req.params[ 0 ] ) ) :
+					res.respond( new Response( e.statusCode || 500, e.stack || e.message || e ) )
 		);
 };
