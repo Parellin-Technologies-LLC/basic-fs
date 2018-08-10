@@ -1,2 +1,40 @@
 <div data-bind="html: hamburger"></div>
 <div data-bind="html: navbar"></div>
+
+<style>
+	table {
+		position: absolute;
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		top: 3.5rem;
+		left: 0;
+		width: 100%;
+	}
+
+	td, th {
+		border: 1px solid #dddddd;
+		text-align: left;
+		padding: 8px;
+	}
+
+	tr:nth-child(even) {
+		background-color: #dddddd;
+	}
+</style>
+<table>
+	<thead>
+	<tr data-bind="foreach: tableHeaders">
+		<th data-bind="text: title"></th>
+	</tr>
+	</thead>
+
+	<tbody data-bind="foreach: tableItems">
+	<tr>
+		<td data-bind="html: filename"></td>
+		<td data-bind="text: size"></td>
+		<td data-bind="text: created"></td>
+		<td data-bind="text: modified"></td>
+		<td data-bind="html: actions"></td>
+	</tr>
+	</tbody>
+</table>

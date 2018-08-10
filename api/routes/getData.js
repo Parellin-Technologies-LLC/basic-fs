@@ -16,8 +16,11 @@ const
 	}        = require( '../lib/filesys' );
 
 module.exports = ( req, res ) => {
-	const fpath = join( gonfig.get( 'dataDir' ), req.params[ 0 ] || '' );
-	
+	const
+		fpath    = join( gonfig.get( 'dataDir' ), req.params[ 0 ] || '' ),
+		config   = gonfig.get( 'server' ),
+		hostname = `http://${ config.host }:${ config.port }`;
+
 	return isFile( fpath )
 		.then(
 			d => {
@@ -31,14 +34,23 @@ module.exports = ( req, res ) => {
 						.then(
 							t => t.map(
 								fname => stat( join( fpath, fname ) )
-									.then( d => ( {
-										filepath: fpath,
-										filename: fname,
-										size: d.size,
-										modified: d.mtime,
-										created: d.birthtime,
-										isDirectory: d.isDirectory()
-									} ) )
+									.then( d => {
+										const
+											isDirectory = d.isDirectory(),
+											path        = `/data/${ d.isDirectory() ? `${ fname }/` : fname }`,
+											link        = `${ hostname }${ path }`;
+
+										return {
+											created: d.birthtime,
+											filename: fname,
+											filepath: fpath,
+											isDirectory,
+											link,
+											modified: d.mtime,
+											path,
+											size: d.size
+										};
+									} )
 							)
 						)
 						.then( t => Promise.all( t ) )

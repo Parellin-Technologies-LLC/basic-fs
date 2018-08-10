@@ -13,10 +13,11 @@ class BasicFSAPI extends ExternalAPI
 	{
 		super( args );
 	}
-	
-	listFiles( dir = '' )
+
+	listFiles( url = '/data/' )
 	{
-		return this.request( { url: `/data/${ dir }` } ).then( console.log ).catch( console.error );
+		console.log( `List Files: ${ url }` );
+		return this.request( { url } );
 	}
 }
 

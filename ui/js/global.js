@@ -5,7 +5,7 @@
  *******************************************************************************************************/
 'use strict';
 
-import Nav from './main/Nav';
+import './main/Nav';
 
 import Container from './main/Container';
 import Home from './views/Home';
