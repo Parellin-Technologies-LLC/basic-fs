@@ -20,7 +20,7 @@ module.exports = ( req, res ) => {
 		fname = req.params[ 0 ] === '/' ? UUIDv4() + ( ext ? `.${ ext }` : '' ) : req.params[ 0 ],
 		fpath = join( gonfig.get( 'dataDir' ), fname ),
 		save  = createWriteStream( fpath );
-
+	
 	if( ext === 'json' ) {
 		const stream = new Duplex();
 		stream.push( Buffer.from( JSON.stringify( req.body, null, 4 ) ) );
@@ -29,7 +29,7 @@ module.exports = ( req, res ) => {
 	} else {
 		req.pipe( save );
 	}
-
+	
 	save
 		.on( 'drain',
 			() => req.resume()

@@ -11,66 +11,56 @@ module.exports = [
 	{
 		route: '/',
 		method: 'ALL',
-		exec: resolve( './api/home' )
+		exec: resolve( './api/routes/home' )
 	},
 	{
 		route: '/ping',
 		method: 'ALL',
-		exec: resolve( './api/ping' )
+		exec: resolve( './api/routes/ping' )
 	},
 	{
 		route: '/kill',
 		method: 'ALL',
-		exec: resolve( './api/kill' )
+		exec: resolve( './api/routes/kill' )
 	},
 	{
 		route: '/docs',
 		method: 'ALL',
-		exec: resolve( './api/docs' )
+		exec: resolve( './api/routes/docs' )
 	},
 	{
 		route: '/data*',
 		method: 'GET',
-		exec: resolve( './api/getData' )
-	},
-	{
-		route: '/data*',
-		method: 'PUT',
-		exec: resolve( './api/upload' )
+		exec: resolve( './api/routes/getData' )
 	},
 	{
 		route: '/data*',
 		method: 'POST',
-		exec: resolve( './api/upload' )
+		exec: resolve( './api/routes/upload' )
 	},
 	{
 		route: '/data*',
 		method: 'DELETE',
-		exec: resolve( './api/deleteData' )
+		exec: resolve( './api/routes/deleteData' )
 	},
 	{
 		route: '/form*',
 		method: 'GET',
-		exec: resolve( './api/getData' )
-	},
-	{
-		route: '/form*',
-		method: 'PUT',
-		exec: resolve( './api/uploadForm' )
+		exec: resolve( './api/routes/getData' )
 	},
 	{
 		route: '/form*',
 		method: 'POST',
-		exec: resolve( './api/uploadForm' )
+		exec: resolve( './api/routes/uploadForm' )
 	},
 	{
 		route: '/form*',
 		method: 'DELETE',
-		exec: resolve( './api/deleteData' )
+		exec: resolve( './api/routes/deleteData' )
 	},
 	{
 		route: '*',
 		method: 'ALL',
-		exec: resolve( './api/methodNotAllowed' )
+		exec: resolve( './api/routes/methodNotAllowed' )
 	}
 ];

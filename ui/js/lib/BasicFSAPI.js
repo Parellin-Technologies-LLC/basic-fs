@@ -13,6 +13,11 @@ class BasicFSAPI extends ExternalAPI
 	{
 		super( args );
 	}
+	
+	listFiles( dir = '' )
+	{
+		return this.request( { url: `/data/${ dir }` } ).then( console.log ).catch( console.error );
+	}
 }
 
 module.exports = new BasicFSAPI(

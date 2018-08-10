@@ -492,3 +492,4 @@ data/*.zip
 archive.tar*
 
 dist/
+data/

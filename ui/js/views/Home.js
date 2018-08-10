@@ -12,6 +12,8 @@ import html from '../../html/home.html';
 import hamburger from '../../html/hamburger.html';
 import navbar from '../../html/navbar.html';
 
+import BasicFSAPI from '../lib/BasicFSAPI';
+
 export default class Home extends Page
 {
 	constructor()
@@ -20,5 +22,13 @@ export default class Home extends Page
 		
 		this.hamburger = hamburger;
 		this.navbar    = navbar;
+	}
+	
+	async preRender()
+	{
+		const x = await BasicFSAPI.listFiles();
+		
+		console.log( x );
+		return super.preRender();
 	}
 }

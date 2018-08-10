@@ -42,7 +42,7 @@ class BasicFS
 		this.express = express();
 		
 		this.express.disable( 'x-powered-by' );
-		this.express.use( favicon( resolve( `${ gonfig.get( 'cwd' ) }ui/assets/favicon/favicon.ico` ) ) );
+		this.express.use( favicon( resolve( `${ gonfig.cwd }/ui/assets/favicon/favicon.ico` ) ) );
 		
 		this.express.use( bodyParser.raw( { limit: '5gb' } ) );
 		this.express.use( bodyParser.json() );
